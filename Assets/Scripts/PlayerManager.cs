@@ -8,19 +8,28 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager instance;
     public static int globalId = 0;
-
-    int maxAmountOfPlayers = 0;
+    
     public List<Player> inactivePlayers = new List<Player>();
     public List<Player> playersList = new List<Player>();
-    public List<Image> playerPictures, currentPictures = new List<Image>();
+    public List<Sprite> playerPictures, currentPictures = new List<Sprite>();
+
+    public List<Transform> startingPositions,gamePositions = new List<Transform>();
+
+    public delegate void PlayerLimitReached();
+    public event PlayerLimitReached OnPlayerLimitreached;
+
+    public delegate void PlayerSlotAvailable();
+    public event PlayerLimitReached OnPlayerSlotAvailable;
 
     GameManager gm;
+    public int maxAmountOfPlayers = 0;
+
 
     // Start is called before the first frame update
     void Awake() {
         //Prevention in case another instance would be created
         if (!instance) {
-            Debug.Log("set instance");
+            Debug.Log("Set instance " + " PlayerManager");
             instance = this;
         }
         else {
@@ -35,18 +44,36 @@ public class PlayerManager : MonoBehaviour
     void Start()
     {
         gm = GameManager.instance;
-        maxAmountOfPlayers = gm.amountOfPlayers;
+        maxAmountOfPlayers = gm.maxAmountOfPlayers;
     }
 
 
     public void AddPlayer(string playerName) {
+        //Create new object player
         Player newPlayer = new Player();
         newPlayer.name = playerName;
-        //newPlayer.image = 
-      
-        
+
+        //Select a random image
+        int randomColor = Random.Range(0, currentPictures.Count - 1);
+        newPlayer.image = currentPictures[randomColor];
+        currentPictures.RemoveAt(randomColor);
+
+        //Add created object to the list
         playersList.Add(newPlayer);
         Debug.Log(string.Format("Added {0} ", newPlayer.name));
+
+        //Attach player to player card
+        PlayerCard pc = PlayerCardManager.instance.CreatePlayerCard(newPlayer);
+        pc.transform.position = startingPositions[playersList.IndexOf(newPlayer)].transform.position;
+
+        if (playersList.Count >= maxAmountOfPlayers)
+            OnPlayerLimitreached();
+
+    }
+
+    public void RemovePlayer() {
+        //ADD event onplayerspot available.
+        //click to remove player
     }
 
 

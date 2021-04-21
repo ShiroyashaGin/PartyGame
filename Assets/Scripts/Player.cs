@@ -7,8 +7,5 @@ public class Player
 {
     public string name;
     public Sprite image;
-
-    public void SetId(int id) {
-
-    }
+    public int id;
 }

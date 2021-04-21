@@ -5,9 +5,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    public GameObject currentPanel;
+
 
     [Header("Settings")]
-    public int amountOfPlayers;
+    public int maxAmountOfPlayers;
      
     // Start is called before the first frame update
     void Awake()
@@ -15,6 +17,7 @@ public class GameManager : MonoBehaviour
         //Prevention in case another instance would be created
         if (!instance) {
             instance = this;
+            Debug.Log("Set instance " + " GameManager");
         }
         else {
             Destroy(this);
