@@ -8,4 +8,6 @@ public class Player
     public string name;
     public Sprite image;
     public int id;
+    public PlayerCard playerCard;
+    public int score;
 }

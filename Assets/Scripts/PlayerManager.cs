@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 
 public class PlayerManager : MonoBehaviour
@@ -14,6 +15,7 @@ public class PlayerManager : MonoBehaviour
     public List<Sprite> playerPictures, currentPictures = new List<Sprite>();
 
     public List<Transform> startingPositions,gamePositions = new List<Transform>();
+    public Transform spawnPosition;
 
     public delegate void PlayerLimitReached();
     public event PlayerLimitReached OnPlayerLimitreached;
@@ -39,7 +41,7 @@ public class PlayerManager : MonoBehaviour
         currentPictures = new List<Sprite>(playerPictures);
     }
 
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +49,11 @@ public class PlayerManager : MonoBehaviour
         maxAmountOfPlayers = gm.maxAmountOfPlayers;
     }
 
+    public void SetPlayerIds() {
+        foreach(Player player in playersList) {
+            player.id = playersList.IndexOf(player);
+        }
+    }
 
     public void AddPlayer(string playerName) {
         //Create new object player
@@ -64,11 +71,12 @@ public class PlayerManager : MonoBehaviour
 
         //Attach player to player card
         PlayerCard pc = PlayerCardManager.instance.CreatePlayerCard(newPlayer);
-        pc.transform.position = startingPositions[playersList.IndexOf(newPlayer)].transform.position;
+        pc.transform.position = spawnPosition.position;
+        pc.transform.DOMove(startingPositions[playersList.IndexOf(newPlayer)].transform.position,0.3f);
+        newPlayer.playerCard = pc;
 
         if (playersList.Count >= maxAmountOfPlayers)
             OnPlayerLimitreached();
-
     }
 
     public void RemovePlayer() {

@@ -1,15 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public GameObject currentPanel;
+    public bool gameStarted = false;
 
 
     [Header("Settings")]
     public int maxAmountOfPlayers;
+
+    PlayerManager pm;
      
     // Start is called before the first frame update
     void Awake()
@@ -21,6 +25,15 @@ public class GameManager : MonoBehaviour
         }
         else {
             Destroy(this);
+        }
+    }
+
+    public void StartGame() {
+        pm = PlayerManager.instance;
+        pm.SetPlayerIds();
+
+        foreach(Player player in pm.playersList) {
+            //player.
         }
     }
 

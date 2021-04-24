@@ -8,10 +8,12 @@ public class InputPlayerNames : MonoBehaviour
 {
     [SerializeField]
     TMP_InputField inputfield;
+    [SerializeField]
+    TMP_Text placeholderText;
 
 
-    private void Awake() {
-        
+    private void Update() {
+        inputfield.Select();
     }
 
     // Start is called before the first frame update
@@ -26,11 +28,11 @@ public class InputPlayerNames : MonoBehaviour
             Debug.Log("check");
             PlayerManager.instance.AddPlayer(inputfield.text);
             inputfield.text = string.Empty;
-            Invoke("Select", 0.1f);
+            Select();
+            placeholderText.text = string.Format("<i>Enter name</i> <size=36>({0}/{1})", PlayerManager.instance.playersList.Count, PlayerManager.instance.maxAmountOfPlayers);
         }
     }
 
-    [ContextMenu("Select")]
     public void Select() {
         EventSystem.current.SetSelectedGameObject(null);
         inputfield.Select();
