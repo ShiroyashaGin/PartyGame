@@ -23,14 +23,22 @@ public class QuestionCard : MonoBehaviour
     }
 
     public void HighlightGivenAnswer(int index) {
+        
+
+
         //Make other buttons execept given answer gray.
-        for(int i= 0; i < answerButtons.Count - 1; i++) {
-            if(i != index) {
-                ColorBlock colorBlock = answerButtons[i].colors;
-                colorBlock.normalColor = GrayedColor;
-                answerButtons[i].colors = colorBlock;
-            }
-        }
+        //for(int i= 0; i < answerButtons.Count - 1; i++) {
+        //    if(i != index) {
+        //        ColorBlock colorBlock = answerButtons[i].colors;
+        //        colorBlock.normalColor = GrayedColor;
+        //        answerButtons[i].colors = colorBlock;
+        //    }
+        //}
+    }
+
+    public void SetButtonsActive(bool state) {
+        btn_false.interactable = state;
+        btn_false.interactable = state;
     }
 
     public void ResetCard() {

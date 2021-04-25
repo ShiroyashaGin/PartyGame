@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 public class GameLogic : MonoBehaviour
 {
@@ -10,21 +11,26 @@ public class GameLogic : MonoBehaviour
 
     public Player currentPlayer;
     public bool answerIsCorrect;
-    public int turnNumber;
-    
+    public int turnNumber = 1;
+
+    public Panel winnerPanel;
+    public WinnerScreen winnerScreen;
+    public ScoreLines scoreLines;
+
+    [Header("Interval Settings")]
+    public float showQuestionResult;
+    public float timeBeforeShowingAnswer;
 
     PlayerManager pm;
     GameManager gm;
     QuestionManager qm;
-    PlayerCardManager pcm;
 
-    float distanceStep;
+    public float distanceStep;
     bool answerReceived;
 
     float playerCardStartingPositionX;
 
-    public delegate void UpdateTurnIndicator();
-    public event UpdateTurnIndicator OnNextTurn;
+    public static event Action<Player> OnCurrentPlayerChanged = delegate { };
 
     void Awake() {
         //Prevention in case another instance would be created
@@ -36,15 +42,14 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    void Start()
-    {
+    void Start() {
         pm = PlayerManager.instance;
         gm = GameManager.instance;
         qm = QuestionManager.instance;
-        pcm = PlayerCardManager.instance;
 
         distanceStep = (pm.gamePositions[0].transform.position.x - pm.finishLocations[0].position.x) / gm.scoreToWin;
         playerCardStartingPositionX = pm.gamePositions[0].transform.position.x;
+        scoreLines.Initialize();
     }
 
     public void SubmitAnswer(bool correct, int answerIndex) {
@@ -59,12 +64,15 @@ public class GameLogic : MonoBehaviour
         //add score to player
         //update position
         answerReceived = false;
-        currentPlayer.score++;
+        if (answerIsCorrect) {
+            currentPlayer.score++;
+        }
+
         UpdatePlayerPosition();
     }
 
     void UpdatePlayerPosition() {
-        currentPlayer.playerCard.transform.DOMoveX(playerCardStartingPositionX - distanceStep * currentPlayer.score,1f);
+        currentPlayer.playerCard.transform.DOMoveX(playerCardStartingPositionX - distanceStep * currentPlayer.score, 1f);
     }
 
     public void StartGame() {
@@ -85,49 +93,58 @@ public class GameLogic : MonoBehaviour
     }
 
     void GivePlayerTurn(int index) {
-        currentPlayer = pm.playersList[0];
-        OnNextTurn();
+        currentPlayer = pm.playersList[index];
     }
 
     public void NextPlayer() {
+        if (pm.playersList.IndexOf(currentPlayer) >= pm.playersList.Count - 1) {
+            currentPlayer = pm.playersList[0];
+        }
         currentPlayer = pm.playersList[pm.playersList.IndexOf(currentPlayer) + 1];
-        OnNextTurn();
     }
 
     void GameEnd() {
-        //Game end
-        Debug.Log("GAME END");
+        PanelManager.instance.SwitchPanel(winnerPanel);
+        winnerScreen.SetData(currentPlayer);
+        foreach (Player player in pm.playersList) {
+            player.playerCard.gameObject.SetActive(false);
+        }
     }
 
     public void GameStateCheck() {
         if (currentPlayer.score >= gm.scoreToWin) {
-            GameEnd();
+            Invoke("GameEnd", 3f);
         }
         else {
-            if(pm.playersList.IndexOf(currentPlayer) >= pm.playersList.Count - 1) {
+            //Last player of the round played, so finish a turn and loop back to player one
+            if (pm.playersList.IndexOf(currentPlayer) >= pm.playersList.Count - 1) {
                 GivePlayerTurn(0);
+                turnNumber++;
             }
-            NextPlayer();
+            else {
+                NextPlayer();
+            }
             StartCoroutine(TurnSequence());
         }
     }
 
     public IEnumerator TurnSequence() {
+        OnCurrentPlayerChanged(currentPlayer);
         yield return new WaitForSeconds(2f);
         qm.ShowQuestion();
         while (!answerReceived) {
             yield return new WaitForEndOfFrame();
         }
         //qm.ShowResult(answerIsCorrect);
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(timeBeforeShowingAnswer);
         qm.ShowResult(answerIsCorrect);
-        
-       
-        yield return new WaitForSeconds(1f);
+
+
+        yield return new WaitForSeconds(showQuestionResult);
         qm.HideQuestion();
         qm.HideResult();
         //animation players before showing answer;
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.5f);
         HandleAnswer();
         yield return null;
         GameStateCheck();

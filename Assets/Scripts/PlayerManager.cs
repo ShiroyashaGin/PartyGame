@@ -10,7 +10,6 @@ public class PlayerManager : MonoBehaviour
     public static PlayerManager instance;
     public static int globalId = 0;
     
-    public List<Player> inactivePlayers = new List<Player>();
     public List<Player> playersList = new List<Player>();
     public List<Sprite> playerPictures, currentPictures = new List<Sprite>();
 
@@ -39,7 +38,6 @@ public class PlayerManager : MonoBehaviour
 
         currentPictures = new List<Sprite>(playerPictures);
     }
-
     
     // Start is called before the first frame update
     void Start()
@@ -82,7 +80,6 @@ public class PlayerManager : MonoBehaviour
         //ADD event onplayerspot available.
         //click to remove player
     }
-
 
     [ContextMenu("Check List")]
     public void Check() {

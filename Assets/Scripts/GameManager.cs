@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public int scoreToWin;
 
     PlayerManager pm;
-     
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -38,9 +38,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void RestartScene() {
+        Application.LoadLevel(Application.loadedLevel);
     }
 }

@@ -7,7 +7,7 @@ public class PanelManager : MonoBehaviour
 
     public static PanelManager instance;
 
-    public Panel gamePanel, lobbyPanel;
+    public Panel gamePanel, lobbyPanel, winnerPanel;
 
     public List<Panel> panelList = new List<Panel>();
 

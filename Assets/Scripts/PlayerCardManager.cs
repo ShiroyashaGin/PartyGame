@@ -21,6 +21,14 @@ public class PlayerCardManager : MonoBehaviour
         else {
             Destroy(this);
         }
+
+        GameLogic.OnCurrentPlayerChanged += OnCurrentPlayerChanged;
+    }
+
+    private void OnCurrentPlayerChanged(Player currentPlayer) {
+        foreach(PlayerCard pc in usedPlayerCards) {
+            pc.SetTurn(pc.linkedPlayer == currentPlayer);
+        }
     }
 
     private void Start() {
@@ -51,6 +59,10 @@ public class PlayerCardManager : MonoBehaviour
         foreach (PlayerCard playerCard in usedPlayerCards) {
             playerCard.transform.SetParent(parent);
         }
+    }
+
+    private void OnDestroy() {
+        GameLogic.OnCurrentPlayerChanged -= OnCurrentPlayerChanged;
     }
 }
 

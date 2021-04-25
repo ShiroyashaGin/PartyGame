@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using DG.Tweening;
 
 public class QuestionManager : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class QuestionManager : MonoBehaviour
     public List<Question> questionStack = new List<Question>();
 
     GameLogic gameLogic;
+
+    public Transform questionCardSpawnLocation, questionCardShowLocation;
     
     void Awake()
     {
@@ -39,12 +42,19 @@ public class QuestionManager : MonoBehaviour
     /// <param name="index"></param>
     public void SubmitAnswer(int index) {
         gameLogic.SubmitAnswer(index == currentQuestion.correctAnswer, index);
-        questionCard.HighlightGivenAnswer(index);
+        questionCard.SetButtonsActive(false);
+        //questionCard.HighlightGivenAnswer(index);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public void ShowQuestion() {
-        currentQuestion = questionList[0];
-        questionList.RemoveAt(0);
+        questionCard.SetButtonsActive(true);
+        questionCard.transform.position = questionCardSpawnLocation.position;
+        questionCard.transform.DOMove(questionCardShowLocation.position, 0.5f);
+        currentQuestion = questionStack[0];
+        questionStack.RemoveAt(0);
         questionCard.gameObject.SetActive(true);
         questionCard.questionText.text = currentQuestion.question;
     }
