@@ -11,18 +11,19 @@ public class PlayerCard : MonoBehaviour
     [SerializeField]
     TMP_Text playerName;
     [SerializeField]
-    Image playerImage;
+    Image playerImage, turnIdicator;
+    GameLogic gameLogic;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameLogic = GameLogic.instance;
+        gameLogic.OnNextTurn += NextTurn;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    void NextTurn() {
+        Debug.Log("Next Turn");
+        turnIdicator.gameObject.SetActive(gameLogic.currentPlayer == linkedPlayer);
     }
 
     public void InitializePlayerCard(Player _player) {

@@ -6,6 +6,6 @@ using UnityEngine;
 public class Question
 {
     public string question;
-    public List<string> answers;
+    //public List<string> answers;
     public int correctAnswer;
 }

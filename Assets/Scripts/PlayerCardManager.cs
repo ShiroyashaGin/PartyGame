@@ -5,13 +5,14 @@ using UnityEngine;
 public class PlayerCardManager : MonoBehaviour
 {
     public static PlayerCardManager instance;
+
+    public Transform playerCardParent;
     public PlayerCard PlayerCardPrefab;
 
     public List<PlayerCard> pool, usedPlayerCards = new List<PlayerCard>();
 
 
-    void Awake()
-    {
+    void Awake() {
         //Prevention in case another instance would be created
         if (!instance) {
             Debug.Log("Set instance " + " PlayerCardManager");
@@ -30,7 +31,7 @@ public class PlayerCardManager : MonoBehaviour
     void PopulatePool() {
         int x = GameManager.instance.maxAmountOfPlayers;
         for (int i = 0; i < x; i++) {
-            PlayerCard newPlayerCard = Instantiate(PlayerCardPrefab, GameManager.instance.currentPanel.transform);
+            PlayerCard newPlayerCard = Instantiate(PlayerCardPrefab, playerCardParent);
             newPlayerCard.gameObject.SetActive(false);
             pool.Add(newPlayerCard);
         }
@@ -47,14 +48,9 @@ public class PlayerCardManager : MonoBehaviour
     }
 
     public void ChildAllPlayerCards(Transform parent) {
-        foreach(PlayerCard playerCard in usedPlayerCards) {
+        foreach (PlayerCard playerCard in usedPlayerCards) {
             playerCard.transform.SetParent(parent);
         }
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
+

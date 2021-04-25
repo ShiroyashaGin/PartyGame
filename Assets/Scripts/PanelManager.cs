@@ -5,14 +5,15 @@ using UnityEngine;
 public class PanelManager : MonoBehaviour
 {
 
-    public PanelManager instance;
+    public static PanelManager instance;
+
+    public Panel gamePanel, lobbyPanel;
 
     public List<Panel> panelList = new List<Panel>();
 
     void Awake()
     {
         if (!instance) {
-            Debug.Log("Set instance " + " PlayerCardManager");
             instance = this;
         }
         else {
@@ -20,7 +21,7 @@ public class PanelManager : MonoBehaviour
         }
 
         //Add all the panel to a list to make future looping more performant
-        foreach(Panel panel in transform.GetComponentsInChildren<Panel>()) {
+        foreach(Panel panel in transform.GetComponentsInChildren<Panel>(true)) {
             panelList.Add(panel);
         }
     }
@@ -37,11 +38,5 @@ public class PanelManager : MonoBehaviour
 
     public void EnablePanel(Panel panel) {
         panel.gameObject.SetActive(true);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

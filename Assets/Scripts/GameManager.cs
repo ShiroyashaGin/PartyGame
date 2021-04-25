@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Settings")]
     public int maxAmountOfPlayers;
+    public int scoreToWin;
 
     PlayerManager pm;
      

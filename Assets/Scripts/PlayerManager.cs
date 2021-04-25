@@ -14,7 +14,7 @@ public class PlayerManager : MonoBehaviour
     public List<Player> playersList = new List<Player>();
     public List<Sprite> playerPictures, currentPictures = new List<Sprite>();
 
-    public List<Transform> startingPositions,gamePositions = new List<Transform>();
+    public List<Transform> startingPositions,gamePositions, finishLocations = new List<Transform>();
     public Transform spawnPosition;
 
     public delegate void PlayerLimitReached();
@@ -31,7 +31,6 @@ public class PlayerManager : MonoBehaviour
     void Awake() {
         //Prevention in case another instance would be created
         if (!instance) {
-            Debug.Log("Set instance " + " PlayerManager");
             instance = this;
         }
         else {
