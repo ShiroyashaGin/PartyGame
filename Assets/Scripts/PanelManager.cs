@@ -2,9 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/// <summary>
+/// General panel manager to handle the UI screens. Most of the time the methods are being called from within
+/// the Unity Editor as button events.
+/// </summary>
 public class PanelManager : MonoBehaviour
 {
-
     public static PanelManager instance;
 
     public Panel gamePanel, lobbyPanel, winnerPanel;
@@ -26,6 +30,7 @@ public class PanelManager : MonoBehaviour
         }
     }
 
+    ///Switches to a specific panel
     public void SwitchPanel(Panel panel) {
         foreach(Panel _panel in panelList) {
                 _panel.gameObject.SetActive(_panel == panel);

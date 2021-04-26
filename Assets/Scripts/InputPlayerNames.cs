@@ -4,6 +4,9 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// Controls the input field in the lobby screen to enter the player names
+/// </summary>
 public class InputPlayerNames : MonoBehaviour
 {
     [SerializeField]

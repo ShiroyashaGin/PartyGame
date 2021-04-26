@@ -22,10 +22,12 @@ public class QuestionCard : MonoBehaviour
         cb_true = btn_true.colors;
     }
 
+
+    /// <summary>
+    /// CUrrently not in use but WIP to Highlight the answer button to show which answer was entered.
+    /// </summary>
+    /// <param name="index"></param>
     public void HighlightGivenAnswer(int index) {
-        
-
-
         //Make other buttons execept given answer gray.
         //for(int i= 0; i < answerButtons.Count - 1; i++) {
         //    if(i != index) {
@@ -37,7 +39,7 @@ public class QuestionCard : MonoBehaviour
     }
 
     public void SetButtonsActive(bool state) {
-        btn_false.interactable = state;
+        btn_true.interactable = state;
         btn_false.interactable = state;
     }
 

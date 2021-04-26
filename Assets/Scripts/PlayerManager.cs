@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-
+/// <summary>
+/// PlayerManager handles all the data regarding the player information and keeps track of the player list.
+/// Currently also tracks the positions for the player cards which should be moved into the playercardmanager later.
+/// </summary>
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager instance;
@@ -16,9 +19,13 @@ public class PlayerManager : MonoBehaviour
     public List<Transform> startingPositions,gamePositions, finishLocations = new List<Transform>();
     public Transform spawnPosition;
 
+    /// <summary>
+    /// Events for those states.
+    /// </summary>
     public delegate void PlayerLimitReached();
     public event PlayerLimitReached OnPlayerLimitreached;
 
+    //not yet in use. For when removing a player is implemented
     public delegate void PlayerSlotAvailable();
     public event PlayerLimitReached OnPlayerSlotAvailable;
 
@@ -79,14 +86,6 @@ public class PlayerManager : MonoBehaviour
     public void RemovePlayer() {
         //ADD event onplayerspot available.
         //click to remove player
-    }
-
-    [ContextMenu("Check List")]
-    public void Check() {
-        foreach(Player player in playersList) {
-            Debug.Log(string.Format("{0}", player.name));
-            
-        }
     }
 }
 

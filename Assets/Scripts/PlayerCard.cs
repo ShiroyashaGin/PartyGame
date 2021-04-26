@@ -4,6 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
+/// <summary>
+/// The playercard represent that player data in a visual way on the field. Taking its values and displaying it
+/// on the screen with the name and an image.
+/// </summary>
 public class PlayerCard : MonoBehaviour
 {
     public Player linkedPlayer;

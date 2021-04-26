@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
+
+/// <summary>
+/// The global GameManager persists through the whole game and is used for global values and actions.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -33,9 +37,6 @@ public class GameManager : MonoBehaviour
         pm = PlayerManager.instance;
         pm.SetPlayerIds();
 
-        foreach(Player player in pm.playersList) {
-            //player.
-        }
     }
 
     public void RestartScene() {

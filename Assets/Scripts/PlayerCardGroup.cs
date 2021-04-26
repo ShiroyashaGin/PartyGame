@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//Currently NOT IN USE
 public class PlayerCardGroup : MonoBehaviour
 {
     public List<Transform> positions3 = new List<Transform>();

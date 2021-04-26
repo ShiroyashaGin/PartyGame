@@ -11,10 +11,10 @@ public class QuestionManager : MonoBehaviour
     public Question currentQuestion;
     public QuestionCard questionCard;
 
-    //preset list
+    //preset list of questions
     public List<Question> questionList = new List<Question>();
-    //[HideInInspector]
-    //Active list
+    [HideInInspector]
+    //Active list of questions
     public List<Question> questionStack = new List<Question>();
 
     GameLogic gameLogic;
@@ -47,7 +47,7 @@ public class QuestionManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Sets all the values on the visual card object so that the player can see the right data being presented on the card
     /// </summary>
     public void ShowQuestion() {
         questionCard.SetButtonsActive(true);
@@ -63,8 +63,8 @@ public class QuestionManager : MonoBehaviour
         questionCard.gameObject.SetActive(false);
     }
 
+    //clone and shuffle the preset question list
     public void ShufflesStack() {
-        //clone and shuffle the preset question list
         questionStack = new List<Question>(questionList);
         questionStack.Shuffle();
     }

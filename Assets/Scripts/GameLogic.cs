@@ -4,6 +4,12 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 
+
+/// <summary>
+/// GameLogic handles the main sequence of the game. It controls the main game loop by running through coroutine
+/// TurnSequence().
+/// 
+/// </summary>
 public class GameLogic : MonoBehaviour
 {
     public static GameLogic instance;
@@ -12,6 +18,7 @@ public class GameLogic : MonoBehaviour
     public Player currentPlayer;
     public bool answerIsCorrect;
     public int turnNumber = 1;
+
 
     public Panel winnerPanel;
     public WinnerScreen winnerScreen;
@@ -30,6 +37,7 @@ public class GameLogic : MonoBehaviour
 
     float playerCardStartingPositionX;
 
+    //Delegate Action to create an Event so that the PlayerManager can hook into it.
     public static event Action<Player> OnCurrentPlayerChanged = delegate { };
 
     void Awake() {
@@ -52,12 +60,14 @@ public class GameLogic : MonoBehaviour
         scoreLines.Initialize();
     }
 
+    //Gets the result of the answer passed down from QuestionManager.
     public void SubmitAnswer(bool correct, int answerIndex) {
         answerIsCorrect = correct;
         answerReceived = true;
-        qm.questionCard.HighlightGivenAnswer(answerIndex);
+        //Currently not in use but a planned feature. qm.questionCard.HighlightGivenAnswer(answerIndex); 
     }
 
+    //Result of the answer outcome
     void HandleAnswer() {
         Debug.Log("Handle answer");
         //show result
@@ -71,6 +81,7 @@ public class GameLogic : MonoBehaviour
         UpdatePlayerPosition();
     }
 
+    //Updates the player position based on the amount of points needed to win and the distance to the end.
     void UpdatePlayerPosition() {
         currentPlayer.playerCard.transform.DOMoveX(playerCardStartingPositionX - distanceStep * currentPlayer.score, 1f);
     }
@@ -96,6 +107,8 @@ public class GameLogic : MonoBehaviour
         currentPlayer = pm.playersList[index];
     }
 
+    //Gives the turn to the next player and loops it back to the first player within the list in case everyone had
+    //their turn.
     public void NextPlayer() {
         if (pm.playersList.IndexOf(currentPlayer) >= pm.playersList.Count - 1) {
             currentPlayer = pm.playersList[0];
@@ -103,14 +116,20 @@ public class GameLogic : MonoBehaviour
         currentPlayer = pm.playersList[pm.playersList.IndexOf(currentPlayer) + 1];
     }
 
+    /// <summary>
+    /// Prepares the states and handled data for when the game ends
+    /// </summary>
     void GameEnd() {
         PanelManager.instance.SwitchPanel(winnerPanel);
         winnerScreen.SetData(currentPlayer);
+
+        //Disable all player objects
         foreach (Player player in pm.playersList) {
             player.playerCard.gameObject.SetActive(false);
         }
     }
 
+    //Checks for the current game state if it should continue to play the next round
     public void GameStateCheck() {
         if (currentPlayer.score >= gm.scoreToWin) {
             Invoke("GameEnd", 3f);
@@ -128,9 +147,38 @@ public class GameLogic : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// If the game runs out of questions it checks for the highest scoring player and ends the game.
+    /// This is flawed since the game doesn't handle draws at the moment.
+    /// </summary>
+    public void OutOfCards() {
+        Player highestScorePlayer = null;
+        foreach (Player player in pm.playersList) {
+           
+            if (highestScorePlayer == null) {
+                highestScorePlayer = player;
+            }
+            else if(highestScorePlayer.score <= player.score){
+                highestScorePlayer = player;
+            }
+        }
+        currentPlayer = highestScorePlayer;
+        GameEnd();
+    }
+
+    /// <summary>
+    /// The main sequence of the game. Waits for each individual breakpoint during a single turn, such as:
+    /// Showing the question, waiting for the player answer and short interval before showing the answer.
+    /// The intervals are built in to allow some room for animation and sounds (for futurue update ). 
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator TurnSequence() {
         OnCurrentPlayerChanged(currentPlayer);
         yield return new WaitForSeconds(2f);
+        if (qm.questionStack.Count < 1) {
+            OutOfCards();
+            yield break;
+        }
         qm.ShowQuestion();
         while (!answerReceived) {
             yield return new WaitForEndOfFrame();
@@ -139,10 +187,10 @@ public class GameLogic : MonoBehaviour
         yield return new WaitForSeconds(timeBeforeShowingAnswer);
         qm.ShowResult(answerIsCorrect);
 
-
         yield return new WaitForSeconds(showQuestionResult);
         qm.HideQuestion();
         qm.HideResult();
+        
         //animation players before showing answer;
         yield return new WaitForSeconds(0.5f);
         HandleAnswer();
